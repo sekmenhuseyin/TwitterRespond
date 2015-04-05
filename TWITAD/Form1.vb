@@ -22,12 +22,12 @@ Public Class Form1
     Public seri_arama As Boolean = False
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ToolStripStatusLabel1.Text = "TWITAD Ver: " & Application.ProductVersion
         WB_1.Dock = DockStyle.Fill
         txt_username.Text = My.Settings.str_username
         txt_password.Text = My.Settings.str_password
         WB_1.ScriptErrorsSuppressed = True
         WB_C.ScriptErrorsSuppressed = True
-        'resimleri_goster("no")
         WB_1.Navigate(url_base)
         komut = "send_login"
         Dim langs As Array = {"Tüm Diller", "am|Amharca (አማርኛ)", "ar|Arapça (العربية)", "bg|Bulgarca (Български)", "bn|Bengal dili (বাংলা)", "bo|Tibetçe (བོད་སྐད)", "chr|Çerokice (ᏣᎳᎩ)", "da|Danca (Dansk)", "de|Almanca (Deutsch)", "dv|Maldivce (ދިވެހި)", "el|Yunanca (Ελληνικά)", "en|İngilizce (English)", "es|İspanyolca (Español)", "fa|Farsça (فارسی)", "fi|Fince (Suomi)", "fr|Fransızca (Français)", "gu|Gucaratça (ગુજરાતી)", "iw|İbranice (עברית)", "hi|Hintçe (हिंदी)", "hu|Macarca (Magyar)", "hy|Ermenice (Հայերեն)", "in|Endonezce (Bahasa Indonesia)", "is|İzlandaca (Íslenska)", "it|İtalyanca (Italiano)", "iu|Eskimo Dili (ᐃᓄᒃᑎᑐᑦ)", "ja|Japonca (日本語)", "ka|Gürcüce (ქართული)", "km|Kmerce (ខ្មែរ)", "kn|Kannada (ಕನ್ನಡ)", "ko|Korece (한국어)", "lo|Laoca (ລາວ)", "lt|Litvanca (Lietuvių)", "ml|Malayalam dili (മലയാളം)", "my|Myanmar (မြန်မာဘာသာ)", "ne|Nepali (नेपाली)", "nl|Flemenkçe (Nederlands)", "no|Norveççe (Norsk)", "or|Oriya dili (ଓଡ଼ିଆ)", "pa|Pencapça (ਪੰਜਾਬੀ)", "pl|Lehçe (Polski)", "pt|Portekizce (Português)", "ru|Rusça (Русский)", "si|Seylanca (සිංහල)", "sv|İsveççe (Svenska)", "ta|Tamilce (தமிழ்)", "te|Telugu dili (తెలుగు)", "th|Tayca (ไทย)", "tl|Tagalogca (Tagalog)", "tr|Türkçe (Türkçe)", "ur|Urduca (ﺍﺭﺩﻭ)", "vi|Vietnamca (Tiếng Việt)", "zh|Çince (中文)"}
@@ -37,7 +37,7 @@ Public Class Form1
         Next
         txt_lang.SelectedIndex = 0
         pb_error_control.Maximum = 3 * saniye / 10
-
+        btn_site_Click(sender, e)
     End Sub
     Private Sub btn_site_Click(sender As Object, e As EventArgs) Handles btn_site.Click
         WB_1.Visible = True
@@ -47,9 +47,6 @@ Public Class Form1
     Private Sub btn_liste_Click(sender As Object, e As EventArgs) Handles btn_liste.Click
         WB_1.Visible = False
         DGW_List.Visible = True
-
-
-
     End Sub
 
     Private Sub chck_searchlimit_CheckedChanged(sender As Object, e As EventArgs) Handles chck_searchlimit.CheckedChanged
@@ -63,8 +60,6 @@ Public Class Form1
             My.Settings.Save()
             komut = "send_login"
             btn_login.Enabled = False : lnk_logout.Visible = True
-        Else
-
         End If
     End Sub
 
@@ -99,7 +94,6 @@ Public Class Form1
             Exit Sub
         End If
         tmr_error_control.Enabled = True
-        'goto_replyform()
         kontrol_komut = "cevap_kontrol"
         lbl_islem.Text = "Twitin daha önce cevaplandığı kontrol ediliyor"
 
@@ -110,18 +104,9 @@ Public Class Form1
         Else
             beklemesuresi = CInt(Int((bekleme.Value * Rnd()) + beklemeust.Value))
         End If
-        'Timer1.Interval = beklemesuresi * saniye
         Timer1.Enabled = True
     End Sub
 #Region "Fonksiyonlar"
-
-    Sub resimleri_goster(Optional durum = "yes")
-        Dim regkey As Microsoft.Win32.RegistryKey = _
-My.Computer.Registry.CurrentUser
-        regkey.OpenSubKey("Software\Microsoft\Internet Explorer\Main", _
-        True).SetValue("Display Inline Images", durum)
-
-    End Sub
     Function send_login() As Boolean
         Try
             Dim islem As Integer = 0
@@ -234,6 +219,7 @@ My.Computer.Registry.CurrentUser
         Thread.Sleep(10)
         Application.DoEvents()
         get_frompage()
+        If search_count >= txt_searchlimit.Value Then searchstop = True : arama_limiti_dolu = True
         If searchstop = True Then
             numaralandir()
             seri_arama = False
@@ -243,42 +229,9 @@ My.Computer.Registry.CurrentUser
             next_page()
             Return True
         End If
-
-        'Try
-        '    Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("div")
-        '    Dim islem As Boolean = False
-        '    For Each el As HtmlElement In els
-        '        If searchstop = True Then
-        '            numaralandir()
-        '            seri_arama = False
-        '            MessageBox.Show("Arama sonlandırıldı. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-        '            Return False
-        '        End If
-        '        Dim tmp_str As String = el.GetAttribute("classname")
-        '        If InStr(tmp_str, "w-button-more") > 0 Then
-        '            el.Children(0).InvokeMember("click")
-        '            komut = "start_search"
-        '            islem = True
-        '            Return True
-        '        End If
-
-        '    Next
-        '    If islem = False Then
-        '        numaralandir()
-        '        seri_arama = False
-        '        MessageBox.Show("Arama sona erdi. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '    End If
-        '    Return False
-
-        'Catch ex As Exception
-        '    Return False
-
-        'End Try
     End Function
 
     Function get_frompage() As Boolean
-        'Try
-
         Dim islem As Integer = 0
         Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("div")
         For Each el As HtmlElement In els
@@ -288,46 +241,31 @@ My.Computer.Registry.CurrentUser
             Dim txt_content = ""
             Dim txt_user = ""
             Dim txt_date = ""
-            Dim txt_retweet = ""
-            Dim txt_favorite = ""
+            Dim txt_retweet = "0 retweet"
+            Dim txt_favorite = "0 favori"
             If searchstop = True Then Return False
 
             If tmp_str1 = "LI" Then
                 Dim tmp_str As String = el.GetAttribute("data-tweet-id")
-                'MsgBox(tmp_str)
-                If tmp_str <> "" Then
-                    txt_user = el.GetAttribute("data-screen-name")
-                    tmp_href = el.GetAttribute("data-permalink-path") : tmp_href = Replace(tmp_href, "/status/", "/reply/")
+                If tmp_str <> "" Then 'eğer tweet id varsa tweet dir
                     Try
+                        txt_user = el.GetAttribute("data-screen-name")
+                        tmp_href = el.GetAttribute("data-permalink-path") : tmp_href = Replace(tmp_href, "/status/", "/reply/")
                         txt_date = el.Children(1).Children(0).Children(1).Children(0).GetAttribute("title")
                         txt_content = el.Children(1).Children(1).InnerText
+                        For i = 1 To el.Children(1).Children(el.Children(1).Children.Count - 1).Children.Count - 1
+                            If InStr(el.Children(1).Children(el.Children(1).Children.Count - 1).Children(i).InnerText, "retweet") > 0 Then txt_retweet = el.Children(1).Children(el.Children(1).Children.Count - 1).Children(i).InnerText
+                            If InStr(el.Children(1).Children(el.Children(1).Children.Count - 1).Children(i).InnerText, "favori") > 0 Then txt_favorite = el.Children(1).Children(el.Children(1).Children.Count - 1).Children(i).InnerText
+                        Next
                     Catch ex As Exception
                     End Try
+                    If txt_retweet = "" Then
+                        txt_retweet = ""
+                    End If
                     If sinirliarama = True Then
                         If search_count + 1 > txt_searchlimit.Value Then
                             arama_limiti_dolu = True
                             Return True
-                        End If
-                    End If
-                    counter.Clear()
-                    If chck_gelismis.Checked = True Then
-                        contur_bilgisi_alama = False
-                        kontrol_komut = "cevap_kontrol"
-                        only_chck = True
-                        WB_C.Navigate(url_base & url_kontrol)
-                        Dim beklemesuresi As Integer = 0
-                        Do While contur_bilgisi_alama = False
-                            Thread.Sleep(10)
-                            beklemesuresi = beklemesuresi + 1
-                            If beklemesuresi > pb_error_control.Maximum Then Exit Do
-                            Application.DoEvents()
-                        Loop
-
-                    End If
-                    If counter.Count > 0 Then
-                        txt_retweet = counter(0)
-                        If counter.Count > 1 Then
-                            txt_favorite = counter(1)
                         End If
                     End If
 
@@ -347,14 +285,8 @@ My.Computer.Registry.CurrentUser
             End If
         Next
         Return True
-        'Catch ex As Exception
-        '   Return False
-        'End Try
-
     End Function
-
     Function goto_replyform() As Boolean
-
         Try
             Dim href As String = url_base & DGW_List.CurrentRow.Cells("twit_url").Value
             WB_1.Navigate(href)
@@ -417,8 +349,6 @@ My.Computer.Registry.CurrentUser
         Catch ex As Exception
             Return False
         End Try
-        'LinkLabel1
-        '
     End Function
     Sub remove_searchlist(sender As Object, e As LinkLabelLinkClickedEventArgs)
         remove_rows(sender.text)
@@ -438,7 +368,6 @@ My.Computer.Registry.CurrentUser
 
 
     End Sub
-
     Function id_isexist(id As String) As Boolean
         For Each item As String In ids
             If item = id Then
@@ -487,16 +416,6 @@ My.Computer.Registry.CurrentUser
 
     Private Sub WB_1_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles WB_1.DocumentCompleted
         Select Case komut
-            'Case "send_login"
-            '    If WB_1.ReadyState = WebBrowserReadyState.Complete Then
-            '        komut = ""
-            '        If is_login() = True Then
-            '            komut = "get_profile"
-            '        End If
-            '    End If
-            'Case "get_profile"
-            '    komut = ""
-            '    get_profile()
             Case "goto_replyform"
                 If WB_1.ReadyState = WebBrowserReadyState.Complete Then
                     komut = ""
@@ -516,11 +435,6 @@ My.Computer.Registry.CurrentUser
 
                     End If
                 End If
-                'Case "logout"
-                '    If WB_1.ReadyState = WebBrowserReadyState.Complete Then
-                '        komut = ""
-                '        logout()
-                '    End If
             Case "chck_logout"
                 If WB_1.ReadyState = WebBrowserReadyState.Complete Then
                     komut = ""
@@ -529,16 +443,11 @@ My.Computer.Registry.CurrentUser
 
         End Select
     End Sub
-
-
-
     Private Sub lnk_searhcstop_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnk_searhcstop.LinkClicked
         searchstop = True
     End Sub
 
     Private Sub lnk_logout_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnk_logout.LinkClicked
-        'WB_1.Navigate(url_base)
-        'komut = "logout"
         If logout() = True Then btn_login.Enabled = True : lnk_logout.Visible = False
     End Sub
 
@@ -637,7 +546,6 @@ My.Computer.Registry.CurrentUser
 
                             For Each ce As DataGridViewCell In DGW_List.CurrentRow.Cells
                                 ce.Style.ForeColor = Color.DarkRed
-                                'ce.Style.BackColor = Color.DarkRed
                                 DGW_List.CurrentRow.Cells(0).Value = False
                             Next
                             '****
@@ -662,7 +570,6 @@ My.Computer.Registry.CurrentUser
                             If id_last = id_next Then
                                 durma_istegi = True
                             End If
-                            start_info()
                         End If
                     End If
 
@@ -672,23 +579,6 @@ My.Computer.Registry.CurrentUser
         End Select
 
     End Sub
-
-    Function start_info() As Boolean
-        kontrol_komut = "cevap_kontrol"
-        WB_C.Navigate(url_base & DGW_List.CurrentRow.Cells("kontrol").Value)
-        Return True
-    End Function
-
-
-    Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles ToolStripButton1.Click
-        frmVersiyon.ShowDialog()
-    End Sub
-
-    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        If lnk_logout.Visible = True Then MsgBox("Çıkış yapmadınız") : e.Cancel = True : Exit Sub
-        'resimleri_goster("yes")
-    End Sub
-
     Private Sub tmr_error_control_Tick(sender As Object, e As EventArgs) Handles tmr_error_control.Tick
 
         Dim yenideger As Integer = pb_error_control.Value + 1
@@ -783,15 +673,10 @@ My.Computer.Registry.CurrentUser
             If System.IO.File.Exists(FILE_NAME) = True Then
                 Dim objReader As New System.IO.StreamReader(FILE_NAME, System.Text.Encoding.GetEncoding("ISO-8859-9"))
                 DGW_List.Rows.Clear()
-                'DGW_List.Columns.Clear()
                 TextLine = Replace(objReader.ReadLine(), """", "")
                 Dim arr As New ArrayList
                 arr.AddRange(Split(TextLine, ";"))
-                'DGW_List.ColumnCount = arr.Count
-                'DGW_List.Columns(0).ValueType= System .Type .
                 Dim i As Integer = 0
-
-
                 Do While objReader.Peek() <> -1
                     TextLine = Replace(objReader.ReadLine(), """", "")
                     arr.Clear()
@@ -820,8 +705,6 @@ My.Computer.Registry.CurrentUser
         End Try
 
     End Sub
-
-
     Private Sub btn_saveexcel_Click(sender As Object, e As EventArgs) Handles btn_saveexcel.Click
         Try
             ExportData()
@@ -838,12 +721,5 @@ My.Computer.Registry.CurrentUser
 
         End Try
         Cursor = Cursors.Arrow
-    End Sub
-
-    Private Sub btn_getinfo_Click(sender As Object, e As EventArgs) Handles btn_getinfo.Click
-        durma_istegi = False
-        only_chck = True
-        seri_arama = False
-        start_info()
     End Sub
 End Class

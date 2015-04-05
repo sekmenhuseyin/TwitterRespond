@@ -23,15 +23,14 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.chck_gelismis = New System.Windows.Forms.CheckBox()
         Me.lnk_searhcstop = New System.Windows.Forms.LinkLabel()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.txt_reply = New System.Windows.Forms.TextBox()
@@ -58,6 +57,7 @@ Partial Class Form1
         Me.txt_username = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.Label9 = New System.Windows.Forms.Label()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.WB_C = New System.Windows.Forms.WebBrowser()
         Me.WB_1 = New System.Windows.Forms.WebBrowser()
@@ -79,7 +79,6 @@ Partial Class Form1
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btn_site = New System.Windows.Forms.ToolStripButton()
         Me.btn_liste = New System.Windows.Forms.ToolStripButton()
-        Me.btn_getinfo = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btn_openexcel = New System.Windows.Forms.ToolStripButton()
         Me.btn_saveexcel = New System.Windows.Forms.ToolStripButton()
@@ -90,7 +89,6 @@ Partial Class Form1
         Me.ToolStripLabel1 = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripLabel2 = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel2 = New System.Windows.Forms.ToolStripStatusLabel()
@@ -173,7 +171,6 @@ Partial Class Form1
         '
         'GroupBox2
         '
-        Me.GroupBox2.Controls.Add(Me.chck_gelismis)
         Me.GroupBox2.Controls.Add(Me.lnk_searhcstop)
         Me.GroupBox2.Controls.Add(Me.Label8)
         Me.GroupBox2.Controls.Add(Me.txt_reply)
@@ -197,17 +194,6 @@ Partial Class Form1
         Me.GroupBox2.TabIndex = 3
         Me.GroupBox2.TabStop = False
         '
-        'chck_gelismis
-        '
-        Me.chck_gelismis.AutoSize = True
-        Me.chck_gelismis.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.chck_gelismis.Location = New System.Drawing.Point(78, 165)
-        Me.chck_gelismis.Name = "chck_gelismis"
-        Me.chck_gelismis.Size = New System.Drawing.Size(200, 17)
-        Me.chck_gelismis.TabIndex = 29
-        Me.chck_gelismis.Text = "Arama Listesine Gelişmiş Bilgileri Ekle"
-        Me.chck_gelismis.UseVisualStyleBackColor = True
-        '
         'lnk_searhcstop
         '
         Me.lnk_searhcstop.AutoSize = True
@@ -221,7 +207,7 @@ Partial Class Form1
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(6, 194)
+        Me.Label8.Location = New System.Drawing.Point(6, 169)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(44, 13)
         Me.Label8.TabIndex = 27
@@ -229,11 +215,11 @@ Partial Class Form1
         '
         'txt_reply
         '
-        Me.txt_reply.Location = New System.Drawing.Point(56, 191)
+        Me.txt_reply.Location = New System.Drawing.Point(56, 166)
         Me.txt_reply.MaxLength = 140
         Me.txt_reply.Multiline = True
         Me.txt_reply.Name = "txt_reply"
-        Me.txt_reply.Size = New System.Drawing.Size(222, 41)
+        Me.txt_reply.Size = New System.Drawing.Size(222, 66)
         Me.txt_reply.TabIndex = 26
         '
         'btn_search
@@ -267,6 +253,8 @@ Partial Class Form1
         '
         Me.chck_searchlimit.AutoSize = True
         Me.chck_searchlimit.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.chck_searchlimit.Checked = True
+        Me.chck_searchlimit.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chck_searchlimit.Location = New System.Drawing.Point(3, 141)
         Me.chck_searchlimit.Name = "chck_searchlimit"
         Me.chck_searchlimit.Size = New System.Drawing.Size(174, 17)
@@ -276,7 +264,6 @@ Partial Class Form1
         '
         'txt_searchlimit
         '
-        Me.txt_searchlimit.Enabled = False
         Me.txt_searchlimit.Increment = New Decimal(New Integer() {20, 0, 0, 0})
         Me.txt_searchlimit.Location = New System.Drawing.Point(183, 140)
         Me.txt_searchlimit.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
@@ -292,7 +279,7 @@ Partial Class Form1
         Me.chck_tektiwit.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.chck_tektiwit.Checked = True
         Me.chck_tektiwit.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chck_tektiwit.Location = New System.Drawing.Point(99, 117)
+        Me.chck_tektiwit.Location = New System.Drawing.Point(6, 117)
         Me.chck_tektiwit.Name = "chck_tektiwit"
         Me.chck_tektiwit.Size = New System.Drawing.Size(179, 17)
         Me.chck_tektiwit.TabIndex = 9
@@ -381,7 +368,6 @@ Partial Class Form1
         Me.lnk_logout.TabIndex = 8
         Me.lnk_logout.TabStop = True
         Me.lnk_logout.Text = "Çık"
-        Me.lnk_logout.Visible = False
         '
         'lbl_fullname
         '
@@ -454,6 +440,7 @@ Partial Class Form1
         '
         'Panel2
         '
+        Me.Panel2.Controls.Add(Me.Label9)
         Me.Panel2.Controls.Add(Me.TableLayoutPanel2)
         Me.Panel2.Controls.Add(Me.WB_1)
         Me.Panel2.Controls.Add(Me.beklemeust)
@@ -466,6 +453,15 @@ Partial Class Form1
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(708, 486)
         Me.Panel2.TabIndex = 4
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(427, 7)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(10, 13)
+        Me.Label9.TabIndex = 4
+        Me.Label9.Text = "-"
         '
         'TableLayoutPanel2
         '
@@ -502,7 +498,7 @@ Partial Class Form1
         'beklemeust
         '
         Me.beklemeust.Increment = New Decimal(New Integer() {10, 0, 0, 0})
-        Me.beklemeust.Location = New System.Drawing.Point(438, 5)
+        Me.beklemeust.Location = New System.Drawing.Point(439, 5)
         Me.beklemeust.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
         Me.beklemeust.Minimum = New Decimal(New Integer() {3, 0, 0, 0})
         Me.beklemeust.Name = "beklemeust"
@@ -514,24 +510,24 @@ Partial Class Form1
         '
         Me.DGW_List.AllowUserToAddRows = False
         Me.DGW_List.BackgroundColor = System.Drawing.Color.White
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
-        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGW_List.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGW_List.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DGW_List.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGW_List.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.durum, Me.sirano, Me.arama_key, Me.zaman, Me.kullanizi, Me.mesaj, Me.twit_url, Me.cevap, Me.kontrol, Me.retweets, Me.favorites})
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
-        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGW_List.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGW_List.DefaultCellStyle = DataGridViewCellStyle2
         Me.DGW_List.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGW_List.Location = New System.Drawing.Point(0, 54)
         Me.DGW_List.Name = "DGW_List"
@@ -615,7 +611,7 @@ Partial Class Form1
         'bekleme
         '
         Me.bekleme.Increment = New Decimal(New Integer() {10, 0, 0, 0})
-        Me.bekleme.Location = New System.Drawing.Point(385, 5)
+        Me.bekleme.Location = New System.Drawing.Point(380, 5)
         Me.bekleme.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
         Me.bekleme.Minimum = New Decimal(New Integer() {3, 0, 0, 0})
         Me.bekleme.Name = "bekleme"
@@ -627,7 +623,7 @@ Partial Class Form1
         '
         Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btn_site, Me.btn_liste, Me.btn_getinfo, Me.ToolStripSeparator1, Me.btn_openexcel, Me.btn_saveexcel, Me.btn_start, Me.btn_stop, Me.pb, Me.ToolStripSeparator2, Me.ToolStripLabel1, Me.ToolStripLabel2, Me.ToolStripSeparator3, Me.ToolStripButton1})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btn_site, Me.btn_liste, Me.ToolStripSeparator1, Me.btn_openexcel, Me.btn_saveexcel, Me.btn_start, Me.btn_stop, Me.pb, Me.ToolStripSeparator2, Me.ToolStripLabel1, Me.ToolStripLabel2, Me.ToolStripSeparator3})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Margin = New System.Windows.Forms.Padding(3, 0, 5, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
@@ -652,15 +648,6 @@ Partial Class Form1
         Me.btn_liste.Name = "btn_liste"
         Me.btn_liste.Size = New System.Drawing.Size(28, 28)
         Me.btn_liste.Text = "Arama Sonuç Listesi"
-        '
-        'btn_getinfo
-        '
-        Me.btn_getinfo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btn_getinfo.Image = CType(resources.GetObject("btn_getinfo.Image"), System.Drawing.Image)
-        Me.btn_getinfo.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btn_getinfo.Name = "btn_getinfo"
-        Me.btn_getinfo.Size = New System.Drawing.Size(28, 28)
-        Me.btn_getinfo.Text = "Twit İstatistiklerini Al"
         '
         'ToolStripSeparator1
         '
@@ -731,16 +718,6 @@ Partial Class Form1
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 31)
-        '
-        'ToolStripButton1
-        '
-        Me.ToolStripButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.ToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
-        Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton1.Name = "ToolStripButton1"
-        Me.ToolStripButton1.Size = New System.Drawing.Size(28, 28)
-        Me.ToolStripButton1.Text = "Versiyon Bilgileri"
         '
         'StatusStrip1
         '
@@ -935,7 +912,6 @@ Partial Class Form1
     Friend WithEvents pb_wait As System.Windows.Forms.ToolStripProgressBar
     Friend WithEvents lbl_sayi As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents lbl_islem As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents ToolStripButton1 As System.Windows.Forms.ToolStripButton
     Friend WithEvents ToolStripStatusLabel2 As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents pb_error_control As System.Windows.Forms.ToolStripProgressBar
     Friend WithEvents tmr_error_control As System.Windows.Forms.Timer
@@ -949,8 +925,6 @@ Partial Class Form1
     Friend WithEvents btn_openexcel As System.Windows.Forms.ToolStripButton
     Friend WithEvents btn_saveexcel As System.Windows.Forms.ToolStripButton
     Friend WithEvents TableLayoutPanel2 As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents btn_getinfo As System.Windows.Forms.ToolStripButton
-    Friend WithEvents chck_gelismis As System.Windows.Forms.CheckBox
     Friend WithEvents durum As System.Windows.Forms.DataGridViewCheckBoxColumn
     Friend WithEvents sirano As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents arama_key As System.Windows.Forms.DataGridViewTextBoxColumn
@@ -962,5 +936,6 @@ Partial Class Form1
     Friend WithEvents kontrol As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents retweets As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents favorites As System.Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Label9 As System.Windows.Forms.Label
 
 End Class
