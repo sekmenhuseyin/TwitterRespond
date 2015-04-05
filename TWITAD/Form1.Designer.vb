@@ -23,8 +23,8 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
@@ -267,8 +267,6 @@ Partial Class Form1
         '
         Me.chck_searchlimit.AutoSize = True
         Me.chck_searchlimit.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.chck_searchlimit.Checked = True
-        Me.chck_searchlimit.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chck_searchlimit.Location = New System.Drawing.Point(3, 141)
         Me.chck_searchlimit.Name = "chck_searchlimit"
         Me.chck_searchlimit.Size = New System.Drawing.Size(174, 17)
@@ -278,6 +276,7 @@ Partial Class Form1
         '
         'txt_searchlimit
         '
+        Me.txt_searchlimit.Enabled = False
         Me.txt_searchlimit.Increment = New Decimal(New Integer() {20, 0, 0, 0})
         Me.txt_searchlimit.Location = New System.Drawing.Point(183, 140)
         Me.txt_searchlimit.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
@@ -291,6 +290,8 @@ Partial Class Form1
         '
         Me.chck_tektiwit.AutoSize = True
         Me.chck_tektiwit.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.chck_tektiwit.Checked = True
+        Me.chck_tektiwit.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chck_tektiwit.Location = New System.Drawing.Point(99, 117)
         Me.chck_tektiwit.Name = "chck_tektiwit"
         Me.chck_tektiwit.Size = New System.Drawing.Size(179, 17)
@@ -380,6 +381,7 @@ Partial Class Form1
         Me.lnk_logout.TabIndex = 8
         Me.lnk_logout.TabStop = True
         Me.lnk_logout.Text = "Çık"
+        Me.lnk_logout.Visible = False
         '
         'lbl_fullname
         '
@@ -512,24 +514,24 @@ Partial Class Form1
         '
         Me.DGW_List.AllowUserToAddRows = False
         Me.DGW_List.BackgroundColor = System.Drawing.Color.White
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGW_List.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGW_List.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
         Me.DGW_List.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGW_List.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.durum, Me.sirano, Me.arama_key, Me.zaman, Me.kullanizi, Me.mesaj, Me.twit_url, Me.cevap, Me.kontrol, Me.retweets, Me.favorites})
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGW_List.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
+        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGW_List.DefaultCellStyle = DataGridViewCellStyle8
         Me.DGW_List.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGW_List.Location = New System.Drawing.Point(0, 54)
         Me.DGW_List.Name = "DGW_List"
@@ -714,7 +716,7 @@ Partial Class Form1
         'ToolStripLabel1
         '
         Me.ToolStripLabel1.Name = "ToolStripLabel1"
-        Me.ToolStripLabel1.Size = New System.Drawing.Size(101, 28)
+        Me.ToolStripLabel1.Size = New System.Drawing.Size(102, 28)
         Me.ToolStripLabel1.Text = "Twit Atma Süresi: "
         '
         'ToolStripLabel2
@@ -752,7 +754,7 @@ Partial Class Form1
         'ToolStripStatusLabel1
         '
         Me.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
-        Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(102, 19)
+        Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(104, 19)
         Me.ToolStripStatusLabel1.Text = "TWITAD Ver:1.0.11"
         '
         'ToolStripStatusLabel2
@@ -815,7 +817,7 @@ Partial Class Form1
         'ToolStripStatusLabel3
         '
         Me.ToolStripStatusLabel3.Name = "ToolStripStatusLabel3"
-        Me.ToolStripStatusLabel3.Size = New System.Drawing.Size(132, 19)
+        Me.ToolStripStatusLabel3.Size = New System.Drawing.Size(133, 19)
         Me.ToolStripStatusLabel3.Text = "Twit için bekleme süresi"
         '
         'pb_wait
@@ -827,7 +829,7 @@ Partial Class Form1
         '
         Me.lbl_sayi.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left
         Me.lbl_sayi.Name = "lbl_sayi"
-        Me.lbl_sayi.Size = New System.Drawing.Size(65, 19)
+        Me.lbl_sayi.Size = New System.Drawing.Size(66, 19)
         Me.lbl_sayi.Text = "Twit Sayısı"
         '
         'lbl_islem

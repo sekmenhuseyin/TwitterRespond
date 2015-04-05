@@ -5,10 +5,8 @@ Public Class Form1
     Public komut As String = ""
     Public kontrol_komut As String = ""
     Public durma_istegi As Boolean = False
-    Public url_base As String = "https://mobile.twitter.com/"
-    Public url_login As String = "https://mobile.twitter.com/i/guest"
-    Public url_search As String = "https://mobile.twitter.com/search?q="
-    Public url_account As String = "https://mobile.twitter.com/account"
+    Public url_base As String = "https://twitter.com/"
+    Public url_search As String = "https://twitter.com/search?f=realtime&q="
     Public search_txt As String = ""
     Public cevap_txt As String = ""
     Public search_count As Integer = 0
@@ -29,8 +27,8 @@ Public Class Form1
         txt_password.Text = My.Settings.str_password
         WB_1.ScriptErrorsSuppressed = True
         WB_C.ScriptErrorsSuppressed = True
-        resimleri_goster("no")
-        WB_1.Navigate(url_login)
+        'resimleri_goster("no")
+        WB_1.Navigate(url_base)
         komut = "send_login"
         Dim langs As Array = {"Tüm Diller", "am|Amharca (አማርኛ)", "ar|Arapça (العربية)", "bg|Bulgarca (Български)", "bn|Bengal dili (বাংলা)", "bo|Tibetçe (བོད་སྐད)", "chr|Çerokice (ᏣᎳᎩ)", "da|Danca (Dansk)", "de|Almanca (Deutsch)", "dv|Maldivce (ދިވެހި)", "el|Yunanca (Ελληνικά)", "en|İngilizce (English)", "es|İspanyolca (Español)", "fa|Farsça (فارسی)", "fi|Fince (Suomi)", "fr|Fransızca (Français)", "gu|Gucaratça (ગુજરાતી)", "iw|İbranice (עברית)", "hi|Hintçe (हिंदी)", "hu|Macarca (Magyar)", "hy|Ermenice (Հայերեն)", "in|Endonezce (Bahasa Indonesia)", "is|İzlandaca (Íslenska)", "it|İtalyanca (Italiano)", "iu|Eskimo Dili (ᐃᓄᒃᑎᑐᑦ)", "ja|Japonca (日本語)", "ka|Gürcüce (ქართული)", "km|Kmerce (ខ្មែរ)", "kn|Kannada (ಕನ್ನಡ)", "ko|Korece (한국어)", "lo|Laoca (ລາວ)", "lt|Litvanca (Lietuvių)", "ml|Malayalam dili (മലയാളം)", "my|Myanmar (မြန်မာဘာသာ)", "ne|Nepali (नेपाली)", "nl|Flemenkçe (Nederlands)", "no|Norveççe (Norsk)", "or|Oriya dili (ଓଡ଼ିଆ)", "pa|Pencapça (ਪੰਜਾਬੀ)", "pl|Lehçe (Polski)", "pt|Portekizce (Português)", "ru|Rusça (Русский)", "si|Seylanca (සිංහල)", "sv|İsveççe (Svenska)", "ta|Tamilce (தமிழ்)", "te|Telugu dili (తెలుగు)", "th|Tayca (ไทย)", "tl|Tagalogca (Tagalog)", "tr|Türkçe (Türkçe)", "ur|Urduca (ﺍﺭﺩﻭ)", "vi|Vietnamca (Tiếng Việt)", "zh|Çince (中文)"}
         txt_lang.Items.Clear()
@@ -55,11 +53,16 @@ Public Class Form1
     End Sub
 
     Private Sub chck_searchlimit_CheckedChanged(sender As Object, e As EventArgs) Handles chck_searchlimit.CheckedChanged
+        sinirliarama = chck_searchlimit.Checked
         If chck_searchlimit.Checked = True Then txt_searchlimit.Enabled = True Else txt_searchlimit.Enabled = False
     End Sub
     Private Sub btn_login_Click(sender As Object, e As EventArgs) Handles btn_login.Click
         If send_login() = True Then
+            My.Settings.str_username = txt_username.Text
+            My.Settings.str_password = txt_password.Text
+            My.Settings.Save()
             komut = "send_login"
+            btn_login.Enabled = False : lnk_logout.Visible = True
         Else
 
         End If
@@ -68,7 +71,6 @@ Public Class Form1
     Private Sub btn_search_Click(sender As Object, e As EventArgs) Handles btn_search.Click
         search_count = 0
         searchstop = False
-        sinirliarama = chck_searchlimit.Checked
         search_txt = txt_q.Text
         cevap_txt = txt_reply.Text
         ids.Clear()
@@ -122,30 +124,29 @@ My.Computer.Registry.CurrentUser
     End Sub
     Function send_login() As Boolean
         Try
-            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("input")
             Dim islem As Integer = 0
+            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("input")
             For Each el As HtmlElement In els
                 Dim tmp_str As String = el.GetAttribute("name")
-                If InStr(tmp_str, "session[username_or_email]") > 0 Then
+                If tmp_str = "session[username_or_email]" Then
                     el.SetAttribute("value", txt_username.Text)
                     islem = islem + 1
                 End If
-                If InStr(tmp_str, "session[password]") > 0 Then
+                If tmp_str = "session[password]" Then
                     el.SetAttribute("value", txt_password.Text)
                     islem = islem + 1
                 End If
 
             Next
-            Dim frms As HtmlElementCollection = WB_1.Document.GetElementsByTagName("form")
-            If frms.Count > 0 Then
-                frms(0).InvokeMember("submit")
-                islem = islem + 1
-                My.Settings.str_username = txt_username.Text
-                My.Settings.str_password = txt_password.Text
-                My.Settings.Save()
-            End If
-
-            If islem = 3 Then Return True Else Return False
+            els = WB_1.Document.GetElementsByTagName("form")
+            For Each el As HtmlElement In els
+                Dim tmp_str As String = el.GetAttribute("action")
+                If tmp_str = "https://twitter.com/sessions" Then
+                    el.InvokeMember("submit")
+                    islem = islem + 1
+                End If
+            Next
+            If islem > 2 Then Return True Else Return False
         Catch ex As Exception
             Return False
         End Try
@@ -177,27 +178,35 @@ My.Computer.Registry.CurrentUser
     Function get_profile() As Boolean
         Try
             Dim islem As Integer = 0
-            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("td")
+            'kullanıcı resmini bul
+            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("img")
             For Each el As HtmlElement In els
-                Dim tmp_str As String = el.GetAttribute("classname")
-
-                If tmp_str = "avatar" Then
+                Dim tmp_str As String = el.GetAttribute("class")
+                If tmp_str = "DashboardProfileCard-avatarImage js-action-profile-avatar" Then
                     If IsNothing(el.Children(0)) = False Then
                         img_avatar.Load(el.Children(0).GetAttribute("src"))
                     End If
                 End If
-                If tmp_str = "user-info" Then
-                    lbl_fullname.Text = el.Children(0).InnerText
-                    lbl_username.Text = el.Children(1).InnerText
+            Next
+            'kullanıcı adını bul
+            els = WB_1.Document.GetElementsByTagName("span")
+            For Each el As HtmlElement In els
+                Dim tmp_str As String = el.GetAttribute("class")
+                If tmp_str = "u-linkComplex-target" Then
+                    lbl_username.Text = el.Children(0).InnerText
                     Return True
                 End If
-
             Next
-            lbl_fullname.Text = "#"
-            lbl_username.Text = "#"
-            img_avatar.Image = Nothing
-
-            Return False
+            'tam adını bul
+            els = WB_1.Document.GetElementsByTagName("a")
+            For Each el As HtmlElement In els
+                Dim tmp_str As String = el.GetAttribute("class")
+                If tmp_str = "u-textInheritColor" Then
+                    lbl_fullname.Text = el.Children(0).InnerText
+                    Return True
+                End If
+            Next
+            Return True
         Catch ex As Exception
             Return False
         End Try
@@ -206,8 +215,8 @@ My.Computer.Registry.CurrentUser
     Function start_search() As Boolean
         Try
             Dim s_text As String = txt_q.Text
-            Dim s_first As String = "%20since%3A" & Format(txt_firstdate.Value, "yyy-MM-dd")
-            Dim s_last As String = "%20until%3A" & Format(txt_lastdate.Value.AddDays(1), "yyy-MM-dd") & "&src=typd"
+            Dim s_first As String = "%20since%3A" & Format(txt_firstdate.Value, "yyyy-MM-dd")
+            Dim s_last As String = "%20until%3A" & Format(txt_lastdate.Value.AddDays(1), "yyyy-MM-dd") & "&src=typd"
             Dim s_lang As String = ""
             If Not txt_lang.SelectedIndex = 0 Then
                 s_lang = "%20lang%3A" & txt_lang.Text.Substring(0, InStr(txt_lang.Text, "|") - 1)
@@ -221,109 +230,120 @@ My.Computer.Registry.CurrentUser
 
     End Function
     Function next_page() As Boolean
-        Try
-            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("div")
-            Dim islem As Boolean = False
-            For Each el As HtmlElement In els
-                If searchstop = True Then
-                    numaralandir()
-                    seri_arama = False
-                    MessageBox.Show("Arama sonlandırıldı. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    Return False
-                End If
-                Dim tmp_str As String = el.GetAttribute("classname")
-                If InStr(tmp_str, "w-button-more") > 0 Then
-                    el.Children(0).InvokeMember("click")
-                    komut = "start_search"
-                    islem = True
-                    Return True
-                End If
-
-            Next
-            If islem = False Then
-                numaralandir()
-                seri_arama = False
-                MessageBox.Show("Arama sona erdi. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+        WB_1.Navigate("javascript:window.scroll(0,document.body.scrollHeight);")
+        Thread.Sleep(10)
+        Application.DoEvents()
+        get_frompage()
+        If searchstop = True Then
+            numaralandir()
+            seri_arama = False
+            MessageBox.Show("Arama sonlandırıldı. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return False
+        Else
+            next_page()
+            Return True
+        End If
 
-        Catch ex As Exception
-            Return False
+        'Try
+        '    Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("div")
+        '    Dim islem As Boolean = False
+        '    For Each el As HtmlElement In els
+        '        If searchstop = True Then
+        '            numaralandir()
+        '            seri_arama = False
+        '            MessageBox.Show("Arama sonlandırıldı. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        '            Return False
+        '        End If
+        '        Dim tmp_str As String = el.GetAttribute("classname")
+        '        If InStr(tmp_str, "w-button-more") > 0 Then
+        '            el.Children(0).InvokeMember("click")
+        '            komut = "start_search"
+        '            islem = True
+        '            Return True
+        '        End If
 
-        End Try
+        '    Next
+        '    If islem = False Then
+        '        numaralandir()
+        '        seri_arama = False
+        '        MessageBox.Show("Arama sona erdi. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        '    End If
+        '    Return False
+
+        'Catch ex As Exception
+        '    Return False
+
+        'End Try
     End Function
 
     Function get_frompage() As Boolean
         'Try
 
         Dim islem As Integer = 0
-        Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("table")
+        Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("div")
         For Each el As HtmlElement In els
-            Dim tmp_str As String = el.GetAttribute("classname")
-            Dim tmp_href As String = el.GetAttribute("href")
+            Dim tmp_str1 As String = el.Parent.TagName
+            Dim tmp_href As String = ""
             Dim url_kontrol As String = ""
             Dim txt_content = ""
             Dim txt_user = ""
-            Dim txt_userid = ""
             Dim txt_date = ""
             Dim txt_retweet = ""
             Dim txt_favorite = ""
             If searchstop = True Then Return False
 
-            If InStr(tmp_str, "tweet") > 0 And Not tmp_href = "" Then
-                If el.Children(0).Children(0).Children.Count > 0 Then
-                    txt_user = el.Children(0).Children(0).Children(1).InnerText
+            If tmp_str1 = "LI" Then
+                Dim tmp_str As String = el.GetAttribute("data-tweet-id")
+                'MsgBox(tmp_str)
+                If tmp_str <> "" Then
+                    txt_user = el.GetAttribute("data-screen-name")
+                    tmp_href = el.GetAttribute("data-permalink-path") : tmp_href = Replace(tmp_href, "/status/", "/reply/")
                     Try
-                        txt_userid = Replace(Trim(el.Children(0).Children(0).Children(1).Children(0).Children(1).InnerText), "@", "")
-                        url_kontrol = Replace(Replace(tmp_href, txt_userid, Replace(lbl_username.Text, "@", "")), " ", "")
+                        txt_date = el.Children(1).Children(0).Children(1).Children(0).GetAttribute("title")
+                        txt_content = el.Children(1).Children(1).InnerText
                     Catch ex As Exception
-
                     End Try
-
-                End If
-                If el.Children(0).Children(0).Children.Count > 2 Then txt_date = el.Children(0).Children(0).Children(2).InnerText
-                If el.Children(0).Children.Count > 1 Then txt_content = el.Children(0).Children(1).InnerText
-                tmp_href = Replace(tmp_href, "/status/", "/reply/")
-                If sinirliarama = True Then
-                    If search_count + 1 > txt_searchlimit.Value Then
-                        arama_limiti_dolu = True
-                        Return True
+                    If sinirliarama = True Then
+                        If search_count + 1 > txt_searchlimit.Value Then
+                            arama_limiti_dolu = True
+                            Return True
+                        End If
                     End If
-                End If
-                counter.Clear()
-                If chck_gelismis.Checked = True Then
-                    contur_bilgisi_alama = False
-                    kontrol_komut = "cevap_kontrol"
-                    only_chck = True
-                    WB_C.Navigate(url_base & url_kontrol)
-                    Dim beklemesuresi As Integer = 0
-                    Do While contur_bilgisi_alama = False
-                        Thread.Sleep(10)
-                        beklemesuresi = beklemesuresi + 1
-                        If beklemesuresi > pb_error_control.Maximum Then Exit Do
-                        Application.DoEvents()
-                    Loop
+                    counter.Clear()
+                    If chck_gelismis.Checked = True Then
+                        contur_bilgisi_alama = False
+                        kontrol_komut = "cevap_kontrol"
+                        only_chck = True
+                        WB_C.Navigate(url_base & url_kontrol)
+                        Dim beklemesuresi As Integer = 0
+                        Do While contur_bilgisi_alama = False
+                            Thread.Sleep(10)
+                            beklemesuresi = beklemesuresi + 1
+                            If beklemesuresi > pb_error_control.Maximum Then Exit Do
+                            Application.DoEvents()
+                        Loop
 
-                End If
-                If counter.Count > 0 Then
-                    txt_retweet = counter(0)
-                    If counter.Count > 1 Then
-                        txt_favorite = counter(1)
                     End If
-                End If
+                    If counter.Count > 0 Then
+                        txt_retweet = counter(0)
+                        If counter.Count > 1 Then
+                            txt_favorite = counter(1)
+                        End If
+                    End If
 
-                If chck_tektiwit.Checked = False Then
-                    DGW_List.Rows.Add(True, "", search_txt, txt_date, "@" & txt_userid, txt_content, tmp_href, cevap_txt, url_kontrol, txt_retweet, txt_favorite)
-                    search_count = search_count + 1
-                Else
-                    If id_isexist(txt_user) = False Then
-                        ids.Add(txt_user)
-                        DGW_List.Rows.Add(True, "", search_txt, txt_date, txt_user, txt_content, tmp_href, cevap_txt, url_kontrol, txt_retweet, txt_favorite)
+                    If chck_tektiwit.Checked = False Then
+                        DGW_List.Rows.Add(True, "", search_txt, txt_date, "@" & txt_user, txt_content, tmp_href, cevap_txt, url_kontrol, txt_retweet, txt_favorite)
                         search_count = search_count + 1
+                    Else
+                        If id_isexist(txt_user) = False Then
+                            ids.Add(txt_user)
+                            DGW_List.Rows.Add(True, "", search_txt, txt_date, txt_user, txt_content, tmp_href, cevap_txt, url_kontrol, txt_retweet, txt_favorite)
+                            search_count = search_count + 1
+                        End If
+
                     End If
 
                 End If
-
             End If
         Next
         Return True
@@ -423,24 +443,24 @@ My.Computer.Registry.CurrentUser
         For Each item As String In ids
             If item = id Then
                 Return True
+                Exit Function
             End If
         Next
         Return False
     End Function
     Function logout() As Boolean
         Try
-            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("input")
+            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("button")
             For Each el As HtmlElement In els
-                Dim tmp_str As String = el.GetAttribute("value")
+                Dim tmp_str As String = el.InnerHtml
                 If InStr(tmp_str, "Çıkış yap") > 0 Then
-                    el.InvokeMember("click")
                     komut = "chck_logout"
+                    el.InvokeMember("click")
+                    Return True : Exit Function
                 End If
 
             Next
-
         Catch ex As Exception
-
         End Try
         Return False
     End Function
@@ -467,17 +487,16 @@ My.Computer.Registry.CurrentUser
 
     Private Sub WB_1_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles WB_1.DocumentCompleted
         Select Case komut
-            Case "send_login"
-                If WB_1.ReadyState = WebBrowserReadyState.Complete Then
-                    komut = ""
-                    If is_login() = True Then
-                        WB_1.Navigate(url_account)
-                        komut = "get_profile"
-                    End If
-                End If
-            Case "get_profile"
-                komut = ""
-                get_profile()
+            'Case "send_login"
+            '    If WB_1.ReadyState = WebBrowserReadyState.Complete Then
+            '        komut = ""
+            '        If is_login() = True Then
+            '            komut = "get_profile"
+            '        End If
+            '    End If
+            'Case "get_profile"
+            '    komut = ""
+            '    get_profile()
             Case "goto_replyform"
                 If WB_1.ReadyState = WebBrowserReadyState.Complete Then
                     komut = ""
@@ -497,15 +516,15 @@ My.Computer.Registry.CurrentUser
 
                     End If
                 End If
-            Case "logout"
-                If WB_1.ReadyState = WebBrowserReadyState.Complete Then
-                    komut = ""
-                    logout()
-                End If
+                'Case "logout"
+                '    If WB_1.ReadyState = WebBrowserReadyState.Complete Then
+                '        komut = ""
+                '        logout()
+                '    End If
             Case "chck_logout"
                 If WB_1.ReadyState = WebBrowserReadyState.Complete Then
                     komut = ""
-                    get_profile()
+                    WB_1.Navigate(url_base)
                 End If
 
         End Select
@@ -518,9 +537,9 @@ My.Computer.Registry.CurrentUser
     End Sub
 
     Private Sub lnk_logout_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnk_logout.LinkClicked
-        WB_1.Navigate(url_account)
-        komut = "logout"
-        btn_login.Enabled = True
+        'WB_1.Navigate(url_base)
+        'komut = "logout"
+        If logout() = True Then btn_login.Enabled = True : lnk_logout.Visible = False
     End Sub
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
@@ -657,6 +676,7 @@ My.Computer.Registry.CurrentUser
     Function start_info() As Boolean
         kontrol_komut = "cevap_kontrol"
         WB_C.Navigate(url_base & DGW_List.CurrentRow.Cells("kontrol").Value)
+        Return True
     End Function
 
 
@@ -665,7 +685,8 @@ My.Computer.Registry.CurrentUser
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        resimleri_goster("yes")
+        If lnk_logout.Visible = True Then MsgBox("Çıkış yapmadınız") : e.Cancel = True : Exit Sub
+        'resimleri_goster("yes")
     End Sub
 
     Private Sub tmr_error_control_Tick(sender As Object, e As EventArgs) Handles tmr_error_control.Tick
