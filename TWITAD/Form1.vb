@@ -6,6 +6,7 @@ Public Class Form1
     Public kontrol_komut As String = ""
     Public durma_istegi As Boolean = False
     Public url_base As String = "https://twitter.com/"
+    Public url_mobile As String = "https://mobile.twitter.com/"
     Public url_search As String = "https://twitter.com/search?f=realtime&q="
     Public search_txt As String = ""
     Public cevap_txt As String = ""
@@ -14,12 +15,10 @@ Public Class Form1
     Public sinirliarama As Boolean = False
     Public only_chck As Boolean = False
     Public ids As New ArrayList
-    Public saniye As Integer = 1000
     Public oturum_twitsayisi As Integer = 0
     Public arama_limiti_dolu As Boolean = False
     Public contur_bilgisi_alama As Boolean = False
     Public counter As New ArrayList
-    Public seri_arama As Boolean = False
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ToolStripStatusLabel1.Text = "TWITAD Ver: " & Application.ProductVersion
@@ -36,7 +35,7 @@ Public Class Form1
             txt_lang.Items.Add(lang)
         Next
         txt_lang.SelectedIndex = 0
-        pb_error_control.Maximum = 3 * saniye / 10
+        error_wait(sender, e)
         btn_site_Click(sender, e)
     End Sub
     Private Sub btn_site_Click(sender As Object, e As EventArgs) Handles btn_site.Click
@@ -54,6 +53,7 @@ Public Class Form1
         If chck_searchlimit.Checked = True Then txt_searchlimit.Enabled = True Else txt_searchlimit.Enabled = False
     End Sub
     Private Sub btn_login_Click(sender As Object, e As EventArgs) Handles btn_login.Click
+        If txt_username.Text = "" Or txt_password.Text = "" Then Exit Sub
         If send_login() = True Then
             My.Settings.str_username = txt_username.Text
             My.Settings.str_password = txt_password.Text
@@ -64,17 +64,17 @@ Public Class Form1
     End Sub
 
     Private Sub btn_search_Click(sender As Object, e As EventArgs) Handles btn_search.Click
+        If txt_q.Text = "" Or txt_reply.Text = "" Then
+            MessageBox.Show("Arama ve cevap metinleri boş olamaz ", "Arama uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
         search_count = 0
         searchstop = False
         search_txt = txt_q.Text
         cevap_txt = txt_reply.Text
         ids.Clear()
         arama_limiti_dolu = False
-        seri_arama = True
-        If search_txt = "" Or cevap_txt = "" Then
-            MessageBox.Show("Arama ve cevap metinleri boş olamaz ", "Arama uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Exit Sub
-        End If
+        lbl_islem.Text = "Arama işlemine başlandı"
         For Each c As Control In FlowLayoutPanel1.Controls
             If c.Text = search_txt Then remove_rows(search_txt)
         Next
@@ -83,28 +83,22 @@ Public Class Form1
         komut = "start_search"
     End Sub
 
-    Private Sub Master_Start() Handles btn_start.Click
-        Dim retval As Integer = MessageBox.Show("Twit cevaplama başlatılsın mı?.", "İşlem Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Information)
-        If Not retval = vbYes Then Exit Sub
-
-        durma_istegi = False
-        only_chck = False
+    Private Sub Master_Start(sender As Object, e As EventArgs) Handles btn_start.Click
+        'control ve sorgu
         If DGW_List.Rows.Count < 1 Then
-            MessageBox.Show("Cavaplanacak birşey yok ", "Geçersiz işlem sonucu", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            MessageBox.Show("Cavaplanacak birşey yok ", "Geçersiz işlem sonucu", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
         End If
-        tmr_error_control.Enabled = True
+        If MessageBox.Show("Twit cevaplama başlatılsın mı?.", "İşlem Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then Exit Sub
+        'ayarlar
+        durma_istegi = False : only_chck = False
         kontrol_komut = "cevap_kontrol"
         lbl_islem.Text = "Twitin daha önce cevaplandığı kontrol ediliyor"
-
-        WB_C.Navigate(url_base & DGW_List.CurrentRow.Cells("kontrol").Value)
-        Dim beklemesuresi As Integer = bekleme.Value
-        If bekleme.Value < beklemeust.Value Then
-            beklemesuresi = CInt(Int((beklemeust.Value * Rnd()) + bekleme.Value))
-        Else
-            beklemesuresi = CInt(Int((bekleme.Value * Rnd()) + beklemeust.Value))
-        End If
-        Timer1.Enabled = True
+        DGW_List.CurrentCell = DGW_List.Item(0, 0)
+        DGW_List.Rows(0).Selected = True : pb.Value = 0 : pb.Maximum = DGW_List.Rows.Count
+        'işlemler
+        tmr_error_control.Enabled = True : tmr_SendReplies.Enabled = True
+        Timer1_Tick(sender, e)
     End Sub
 #Region "Fonksiyonlar"
     Function send_login() As Boolean
@@ -222,8 +216,7 @@ Public Class Form1
         If search_count >= txt_searchlimit.Value Then searchstop = True : arama_limiti_dolu = True
         If searchstop = True Then
             numaralandir()
-            seri_arama = False
-            MessageBox.Show("Arama sonlandırıldı. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            lbl_islem.Text = "Arama sonlandırıldı. Bulunan twit sayısı: " & search_count
             Return False
         Else
             next_page()
@@ -232,12 +225,12 @@ Public Class Form1
     End Function
 
     Function get_frompage() As Boolean
+        lbl_islem.Text = "Arama Yapılıyor..."
         Dim islem As Integer = 0
         Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("div")
         For Each el As HtmlElement In els
             Dim tmp_str1 As String = el.Parent.TagName
             Dim tmp_href As String = ""
-            Dim url_kontrol As String = ""
             Dim txt_content = ""
             Dim txt_user = ""
             Dim txt_date = ""
@@ -250,7 +243,7 @@ Public Class Form1
                 If tmp_str <> "" Then 'eğer tweet id varsa tweet dir
                     Try
                         txt_user = el.GetAttribute("data-screen-name")
-                        tmp_href = el.GetAttribute("data-permalink-path") : tmp_href = Replace(tmp_href, "/status/", "/reply/")
+                        tmp_href = el.GetAttribute("data-permalink-path")
                         txt_date = el.Children(1).Children(0).Children(1).Children(0).GetAttribute("title")
                         txt_content = el.Children(1).Children(1).InnerText
                         For i = 1 To el.Children(1).Children(el.Children(1).Children.Count - 1).Children.Count - 1
@@ -270,12 +263,12 @@ Public Class Form1
                     End If
 
                     If chck_tektiwit.Checked = False Then
-                        DGW_List.Rows.Add(True, "", search_txt, txt_date, "@" & txt_user, txt_content, tmp_href, cevap_txt, url_kontrol, txt_retweet, txt_favorite)
+                        DGW_List.Rows.Add(True, "", search_txt, txt_date, "@" & txt_user, txt_content, tmp_href, cevap_txt, "", txt_retweet, txt_favorite)
                         search_count = search_count + 1
                     Else
                         If id_isexist(txt_user) = False Then
                             ids.Add(txt_user)
-                            DGW_List.Rows.Add(True, "", search_txt, txt_date, txt_user, txt_content, tmp_href, cevap_txt, url_kontrol, txt_retweet, txt_favorite)
+                            DGW_List.Rows.Add(True, "", search_txt, txt_date, "@" & txt_user, txt_content, tmp_href, cevap_txt, "", txt_retweet, txt_favorite)
                             search_count = search_count + 1
                         End If
 
@@ -284,51 +277,20 @@ Public Class Form1
                 End If
             End If
         Next
+        lbl_islem.Text = "Arama Bitti!"
         Return True
     End Function
     Function goto_replyform() As Boolean
-        Try
-            Dim href As String = url_base & DGW_List.CurrentRow.Cells("twit_url").Value
-            WB_1.Navigate(href)
-            lbl_islem.Text = "Twit cevaplamak için hazırlanıyor"
-            komut = "goto_replyform"
-            Return True
-        Catch ex As Exception
-            Return False
-        End Try
+        'Try
+        '    Dim href As String = url_base & DGW_List.CurrentRow.Cells("twit_url").Value
+        '    WB_1.Navigate(href)
+        '    lbl_islem.Text = "Twit cevaplamak için hazırlanıyor"
+        '    komut = "goto_replyform"
+        Return True
+        'Catch ex As Exception
+        '    Return False
+        'End Try
 
-    End Function
-
-    Function reply() As Boolean
-        Dim tmp_cevap As String = DGW_List.CurrentRow.Cells("cevap").Value
-        If tmp_cevap = "" Then Return False
-        Try
-            Dim els As HtmlElementCollection = WB_1.Document.GetElementsByTagName("textarea")
-            If els.Count > 0 Then
-                els(0).InnerHtml = els(0).InnerHtml & " " & tmp_cevap
-                Dim frms As HtmlElementCollection = WB_1.Document.GetElementsByTagName("form")
-                frms(0).InvokeMember("submit")
-                pb_error_control.Value = 0
-
-                lbl_islem.Text = "Twit cevaplandı"
-                oturum_twitsayisi = oturum_twitsayisi + 1
-                lbl_sayi.Text = "Cevaplanan Twit Sayısı: " & oturum_twitsayisi
-                DGW_List.CurrentRow.Cells("durum").Value = False
-                For Each ce As DataGridViewCell In DGW_List.CurrentRow.Cells
-                    ce.Style.BackColor = Color.LawnGreen
-                    DGW_List.CurrentRow.Cells(0).Value = False
-                Next
-
-                Do
-                    If sonraki_satir() = True Then Exit Do
-                Loop
-
-                Return True
-            End If
-            Return False
-        Catch ex As Exception
-            Return False
-        End Try
     End Function
     Function add_searchlist() As Boolean
         Try
@@ -416,12 +378,6 @@ Public Class Form1
 
     Private Sub WB_1_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles WB_1.DocumentCompleted
         Select Case komut
-            Case "goto_replyform"
-                If WB_1.ReadyState = WebBrowserReadyState.Complete Then
-                    komut = ""
-                    lbl_islem.Text = "Twit cevap için hazırlandı."
-                    reply()
-                End If
             Case "start_search"
                 If WB_1.ReadyState = WebBrowserReadyState.Complete Then
                     komut = ""
@@ -430,8 +386,7 @@ Public Class Form1
                         next_page()
                     Else
                         numaralandir()
-                        seri_arama = False
-                        MessageBox.Show("Arama sona erdi. Bulunan twit sayısı: " & search_count, "Arama sonucu", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        lbl_islem.Text = "Arama sona erdi. Bulunan twit sayısı: " & search_count
 
                     End If
                 End If
@@ -451,127 +406,169 @@ Public Class Form1
         If logout() = True Then btn_login.Enabled = True : lnk_logout.Visible = False
     End Sub
 
-    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
-
-        Dim p_val As Integer = pb_wait.Value + 100
-        If p_val > pb_wait.Maximum Then
-            pb_wait.Value = pb_wait.Maximum
-
-            Dim beklemesuresi As Integer = bekleme.Value
-            If bekleme.Value < beklemeust.Value Then
-                ' Generate random value between 1 and 6. 
-                Randomize()
-                beklemesuresi = CInt(Int((beklemeust.Value * Rnd()) + bekleme.Value))
-            Else
-                ' Generate random value between 1 and 6. 
-                Randomize()
-                beklemesuresi = CInt(Int((bekleme.Value * Rnd()) + beklemeust.Value))
-            End If
-            pb_wait.Maximum = beklemesuresi * saniye
-            p_val = 0
-            'Timer1.Interval = beklemesuresi * saniye
-            pb.Maximum = DGW_List.Rows.Count
-            pb.Value = DGW_List.CurrentRow.Index + 1
-
-            If Not DGW_List.CurrentRow.Cells("cevap").Value = "" Then
-                kontrol_komut = "cevap_kontrol"
-                lbl_islem.Text = "Twitin daha önce cevaplandığı kontrol ediliyor"
-                WB_C.Navigate(url_base & DGW_List.CurrentRow.Cells("kontrol").Value)
-
-                'goto_replyform()
-            End If
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles tmr_SendReplies.Tick
+        Dim r As Random = New Random
+        Dim intRandomNumber As Integer = r.Next(bekleme.Value, beklemeust.Value) * 1000 'belirti iki rakam arasından rastgele bir saniye bul
+        tmr_SendReplies.Interval = intRandomNumber
+        If DGW_List.CurrentRow.Cells("cevap").Value.ToString <> "" And DGW_List.CurrentRow.Cells("kontrol").Value.ToString = "" And DGW_List.CurrentRow.Cells("durum").Value = True Then
+            kontrol_komut = "cevap_kontrol"
+            lbl_islem.Text = "Twitin daha önce cevaplandığı kontrol ediliyor"
+            WB_C.Navigate(url_mobile & DGW_List.CurrentRow.Cells("twit_url").Value)
+        Else
             If DGW_List.CurrentRow.Index = DGW_List.Rows.Count - 1 Then
-                Timer1.Enabled = False
-                only_chck = False
-                durma_istegi = True
-                MessageBox.Show("Bir sonraki satıra geçilemiyor. Liste sonuna gelinmiş olabilir.", "İşlem Sonucu", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                DGW_List.CurrentCell = DGW_List.Item(0, 0)
+                DGW_List.Rows(0).Selected = True
             Else
-
+                DGW_List.CurrentCell = DGW_List.Item(0, DGW_List.CurrentRow.Index + 1)
+                DGW_List.Rows(DGW_List.CurrentRow.Index).Selected = True
             End If
-
-
+            Timer1_Tick(sender, e)
         End If
-        pb_wait.Value = p_val
+        pb.Maximum = DGW_List.Rows.Count : pb.Value = DGW_List.CurrentRow.Index + 1
+
+
+        'Dim p_val As Integer = pb_wait.Value + 100
+        'If p_val > pb_wait.Maximum Then
+        '    pb_wait.Value = pb_wait.Maximum
+
+        '    Dim beklemesuresi As Integer = bekleme.Value
+        '    If bekleme.Value < beklemeust.Value Then
+        '        ' Generate random value between 1 and 6. 
+        '        Randomize()
+        '        beklemesuresi = CInt(Int((beklemeust.Value * Rnd()) + bekleme.Value))
+        '    Else
+        '        ' Generate random value between 1 and 6. 
+        '        Randomize()
+        '        beklemesuresi = CInt(Int((bekleme.Value * Rnd()) + beklemeust.Value))
+        '    End If
+        '    pb_wait.Maximum = beklemesuresi * saniye
+        '    p_val = 0
+
+
+
+        'End If
+        'pb_wait.Value = p_val
 
     End Sub
-
     Private Sub btn_stop_Click(sender As Object, e As EventArgs) Handles btn_stop.Click
+        DGW_List.Rows(0).Selected = True : pb.Value = 0
         durma_istegi = True
-        Timer1.Enabled = False
+        tmr_SendReplies.Enabled = False
         tmr_error_control.Enabled = False
-        MessageBox.Show("Twit cevaplama durduruldu.", "İşlem Sonucu", MessageBoxButtons.OK, MessageBoxIcon.Information)
         lbl_islem.Text = "Twit cevaplama durduruldu"
-
     End Sub
-
     Sub numaralandir()
         For Each r As DataGridViewRow In DGW_List.Rows
             r.Cells("sirano").Value = r.Index + 1
         Next
-
     End Sub
     Private Sub WB_C_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles WB_C.DocumentCompleted
         counter.Clear()
         Select Case kontrol_komut
-            Case "cevap_kontrol"
-                If WB_1.ReadyState = WebBrowserReadyState.Complete Then
-                    kontrol_komut = ""
-                    Dim els As HtmlElementCollection = WB_C.Document.GetElementsByTagName("span")
-                    For Each el As HtmlElement In els
-                        Dim tmp_str As String = el.GetAttribute("classname")
-                        If InStr(tmp_str, "statnum") > 0 Then
-                            counter.Add(el.InnerText)
-                        End If
-                    Next
-                    contur_bilgisi_alama = True
-                    If seri_arama = True Then Exit Sub
-                    If counter.Count > 0 Then
-                        DGW_List.CurrentRow.Cells("retweets").Value = counter(0)
-                        If counter.Count > 1 Then
-                            DGW_List.CurrentRow.Cells("favorites").Value = counter(1)
-                        End If
+            Case "goto_replyform"
+                If WB_C.ReadyState = WebBrowserReadyState.Complete Then
+                    komut = ""
+                    Try
+                        Dim els As HtmlElementCollection = WB_C.Document.GetElementsByTagName("textarea")
+                        If els.Count > 0 Then
+                            els(0).InnerHtml = els(0).InnerHtml & " " & DGW_List.CurrentRow.Cells("cevap").Value.ToString
+                            Dim frms As HtmlElementCollection = WB_C.Document.GetElementsByTagName("form")
+                            frms(0).InvokeMember("submit")
+                            pb_error_control.Value = 0
 
-                        For Each ce As DataGridViewCell In DGW_List.CurrentRow.Cells
-                            ce.Style.BackColor = Color.Bisque
-                        Next
-                    End If
-                    els = WB_C.Document.GetElementsByTagName("div")
-                    For Each el As HtmlElement In els
-                        Dim tmp_str As String = el.InnerText
-                        Dim tmp_id As String = Replace(Replace(lbl_username.Text, "@", ""), " ", "")
-
-                        If InStr(tmp_str, tmp_id) > 0 Then
-                            'Cevap yazılmış
-                            lbl_islem.Text = "Twit daha önce cevaplanmış"
-
+                            lbl_islem.Text = "Twit cevaplandı"
+                            oturum_twitsayisi = oturum_twitsayisi + 1
+                            lbl_sayi.Text = "Cevaplanan Twit Sayısı: " & oturum_twitsayisi
+                            DGW_List.CurrentRow.Cells("durum").Value = False
+                            DGW_List.CurrentRow.Cells("kontrol").Value = "tamam"
                             For Each ce As DataGridViewCell In DGW_List.CurrentRow.Cells
-                                ce.Style.ForeColor = Color.DarkRed
-                                DGW_List.CurrentRow.Cells(0).Value = False
+                                ce.Style.BackColor = Color.LawnGreen
                             Next
-                            '****
-                            If only_chck = False Then
-                                sonraki_satir()
-                                Master_Start()
-                            End If
-                            '****
 
-                            Exit Sub
+                            If DGW_List.CurrentRow.Index = DGW_List.Rows.Count - 1 Then
+                                DGW_List.CurrentCell = DGW_List.Item(0, 0)
+                                DGW_List.Rows(0).Selected = True
+                            Else
+                                DGW_List.CurrentCell = DGW_List.Item(0, DGW_List.CurrentRow.Index + 1)
+                                DGW_List.Rows(DGW_List.CurrentRow.Index).Selected = True
+                            End If
+
                         End If
+                    Catch ex As Exception
+                    End Try
+                End If
+            Case "cevap_kontrol"
+                If WB_C.ReadyState = WebBrowserReadyState.Complete Then
+                    kontrol_komut = ""
+                    'Dim els As HtmlElementCollection = WB_C.Document.GetElementsByTagName("div")
+                    'For Each el As HtmlElement In els
+                    '    Dim tmp_str As String = el.GetAttribute("classname")
+                    '    If InStr(tmp_str, "statnum") > 0 Then
+                    '        counter.Add(el.InnerText)
+                    '    End If
+                    'Next
+                    'contur_bilgisi_alama = True
+
+                    'If counter.Count > 0 Then
+                    '    DGW_List.CurrentRow.Cells("retweets").Value = counter(0)
+                    '    If counter.Count > 1 Then
+                    '        DGW_List.CurrentRow.Cells("favorites").Value = counter(1)
+                    '    End If
+
+                    '    For Each ce As DataGridViewCell In DGW_List.CurrentRow.Cells
+                    '        ce.Style.BackColor = Color.Bisque
+                    '    Next
+                    'End If
+                    Dim els As HtmlElementCollection = WB_C.Document.GetElementsByTagName("table")
+                    For Each el As HtmlElement In els
+                        Dim tmp_str1 As String = el.Parent.TagName
+                        If tmp_str1 = "DIV" Then
+                            Dim tmp_str As String = el.InnerText
+                            If InStr(tmp_str, "@" & txt_username.Text) > 0 Then
+                                lbl_islem.Text = "Twit daha önce cevaplanmamış"
+                                DGW_List.CurrentRow.Cells("kontrol").Value = "Tamam"
+                                Exit For
+                            Else
+                                lbl_islem.Text = "Twit cevaplanıyor" : kontrol_komut = "goto_replyform"
+                                WB_C.Navigate(url_mobile & DGW_List.CurrentRow.Cells("twit_url").Value.ToString.Replace("status", "reply"))
+                                Exit For
+                            End If
+                        End If
+
+
+                        '    Dim tmp_id As String = Replace(Replace(lbl_username.Text, "@", ""), " ", "")
+
+                        '    If InStr(tmp_str, tmp_id) > 0 Then
+                        '        'Cevap yazılmış
+                        '        lbl_islem.Text = "Twit daha önce cevaplanmış"
+
+                        '        For Each ce As DataGridViewCell In DGW_List.CurrentRow.Cells
+                        '            ce.Style.ForeColor = Color.DarkRed
+                        '            DGW_List.CurrentRow.Cells(0).Value = False
+                        '        Next
+                        '        '****
+                        '        If only_chck = False Then
+                        '            sonraki_satir()
+                        '            Master_Start(sender, e)
+                        '        End If
+                        '        '****
+
+                        '        Exit Sub
+                        '    End If
 
                     Next
-                    lbl_islem.Text = "Twit daha önce cevaplanmamış"
-                    If only_chck = False Then
-                        goto_replyform()
-                    Else
-                        If durma_istegi = False Then
-                            Dim id_last As Integer = DGW_List.CurrentRow.Index
-                            sonraki_satir()
-                            Dim id_next As Integer = DGW_List.CurrentRow.Index
-                            If id_last = id_next Then
-                                durma_istegi = True
-                            End If
-                        End If
-                    End If
+                    'If only_chck = False Then
+                    '    goto_replyform()
+                    'Else
+                    '    If durma_istegi = False Then
+                    '        Dim id_last As Integer = DGW_List.CurrentRow.Index
+                    '        sonraki_satir()
+                    '        Dim id_next As Integer = DGW_List.CurrentRow.Index
+                    '        If id_last = id_next Then
+                    '            durma_istegi = True
+                    '        End If
+                    '    End If
+                    'End If
 
                 End If
 
@@ -581,39 +578,39 @@ Public Class Form1
     End Sub
     Private Sub tmr_error_control_Tick(sender As Object, e As EventArgs) Handles tmr_error_control.Tick
 
-        Dim yenideger As Integer = pb_error_control.Value + 1
+        'Dim yenideger As Integer = pb_error_control.Value + 1
 
-        If yenideger > pb_error_control.Maximum Then
-            yenideger = pb_error_control.Maximum
-            pb_error_control.Value = 0
+        'If yenideger > pb_error_control.Maximum Then
+        '    yenideger = pb_error_control.Maximum
+        '    pb_error_control.Value = 0
 
-            If My.Computer.Network.IsAvailable Then
+        '    If My.Computer.Network.IsAvailable Then
 
-                If IsNothing(DGW_List.CurrentRow) = False Then
-                    Dim r As Integer = DGW_List.CurrentRow.Index
-                    If DGW_List.Rows.Count > r + 1 Then
-                        Dim nextRow As DataGridViewRow = DGW_List.Rows(r + 1)
-                        DGW_List.CurrentCell = nextRow.Cells(0)
-                        pb_wait.Value = 0
-                        goto_replyform()
-                    End If
-                End If
+        '        If IsNothing(DGW_List.CurrentRow) = False Then
+        '            Dim r As Integer = DGW_List.CurrentRow.Index
+        '            If DGW_List.Rows.Count > r + 1 Then
+        '                Dim nextRow As DataGridViewRow = DGW_List.Rows(r + 1)
+        '                DGW_List.CurrentCell = nextRow.Cells(0)
+        '                pb_wait.Value = 0
+        '                'goto_replyform()
+        '            End If
+        '        End If
 
 
-            Else
-                pb_error_control.Value = 0
-            End If
+        '    Else
+        '        pb_error_control.Value = 0
+        '    End If
 
-        Else
+        'Else
 
-            pb_error_control.Value = yenideger
-        End If
+        '    pb_error_control.Value = yenideger
+        'End If
 
 
     End Sub
 
-    Private Sub error_wait(sender As Object, e As EventArgs) Handles DkToolStripMenuItem.Click
-        pb_error_control.Maximum = sender.tag * saniye / 10
+    Private Sub error_wait(sender As Object, e As EventArgs) Handles DkToolStripMenuItem.Click, DkToolStripMenuItem1.Click, DkToolStripMenuItem2.Click, DkToolStripMenuItem3.Click, DkToolStripMenuItem4.Click
+        pb_error_control.Maximum = sender.tag * 60000
     End Sub
     Public Sub ExportData()
 

@@ -23,8 +23,8 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
@@ -57,9 +57,8 @@ Partial Class Form1
         Me.txt_username = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.Label9 = New System.Windows.Forms.Label()
-        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.WB_C = New System.Windows.Forms.WebBrowser()
+        Me.Label9 = New System.Windows.Forms.Label()
         Me.WB_1 = New System.Windows.Forms.WebBrowser()
         Me.beklemeust = New System.Windows.Forms.NumericUpDown()
         Me.DGW_List = New System.Windows.Forms.DataGridView()
@@ -103,7 +102,7 @@ Partial Class Form1
         Me.pb_wait = New System.Windows.Forms.ToolStripProgressBar()
         Me.lbl_sayi = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lbl_islem = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.tmr_SendReplies = New System.Windows.Forms.Timer(Me.components)
         Me.tmr_error_control = New System.Windows.Forms.Timer(Me.components)
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
@@ -113,7 +112,6 @@ Partial Class Form1
         Me.GroupBox1.SuspendLayout()
         CType(Me.img_avatar, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
-        Me.TableLayoutPanel2.SuspendLayout()
         CType(Me.beklemeust, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DGW_List, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.bekleme, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -148,7 +146,7 @@ Partial Class Form1
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Padding = New System.Windows.Forms.Padding(5)
         Me.Panel1.Size = New System.Drawing.Size(294, 486)
-        Me.Panel1.TabIndex = 3
+        Me.Panel1.TabIndex = 0
         '
         'FlowLayoutPanel1
         '
@@ -158,7 +156,7 @@ Partial Class Form1
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Padding = New System.Windows.Forms.Padding(0, 10, 0, 0)
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(284, 75)
-        Me.FlowLayoutPanel1.TabIndex = 4
+        Me.FlowLayoutPanel1.TabIndex = 2
         '
         'Label4
         '
@@ -191,7 +189,7 @@ Partial Class Form1
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(10)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(284, 265)
-        Me.GroupBox2.TabIndex = 3
+        Me.GroupBox2.TabIndex = 1
         Me.GroupBox2.TabStop = False
         '
         'lnk_searhcstop
@@ -200,7 +198,7 @@ Partial Class Form1
         Me.lnk_searhcstop.Location = New System.Drawing.Point(54, 243)
         Me.lnk_searhcstop.Name = "lnk_searhcstop"
         Me.lnk_searhcstop.Size = New System.Drawing.Size(79, 13)
-        Me.lnk_searhcstop.TabIndex = 28
+        Me.lnk_searhcstop.TabIndex = 9
         Me.lnk_searhcstop.TabStop = True
         Me.lnk_searhcstop.Text = "Aramayı Durdur"
         '
@@ -220,14 +218,14 @@ Partial Class Form1
         Me.txt_reply.Multiline = True
         Me.txt_reply.Name = "txt_reply"
         Me.txt_reply.Size = New System.Drawing.Size(222, 66)
-        Me.txt_reply.TabIndex = 26
+        Me.txt_reply.TabIndex = 7
         '
         'btn_search
         '
         Me.btn_search.Location = New System.Drawing.Point(139, 238)
         Me.btn_search.Name = "btn_search"
         Me.btn_search.Size = New System.Drawing.Size(139, 23)
-        Me.btn_search.TabIndex = 15
+        Me.btn_search.TabIndex = 8
         Me.btn_search.Text = "Arama Listesine Ekle"
         Me.btn_search.UseVisualStyleBackColor = True
         '
@@ -238,7 +236,7 @@ Partial Class Form1
         Me.txt_lang.Location = New System.Drawing.Point(130, 91)
         Me.txt_lang.Name = "txt_lang"
         Me.txt_lang.Size = New System.Drawing.Size(148, 21)
-        Me.txt_lang.TabIndex = 14
+        Me.txt_lang.TabIndex = 3
         '
         'Label7
         '
@@ -258,7 +256,7 @@ Partial Class Form1
         Me.chck_searchlimit.Location = New System.Drawing.Point(3, 141)
         Me.chck_searchlimit.Name = "chck_searchlimit"
         Me.chck_searchlimit.Size = New System.Drawing.Size(174, 17)
-        Me.chck_searchlimit.TabIndex = 12
+        Me.chck_searchlimit.TabIndex = 5
         Me.chck_searchlimit.Text = "Arama Listesi Sayısını Sınırlandır"
         Me.chck_searchlimit.UseVisualStyleBackColor = True
         '
@@ -270,7 +268,7 @@ Partial Class Form1
         Me.txt_searchlimit.Minimum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.txt_searchlimit.Name = "txt_searchlimit"
         Me.txt_searchlimit.Size = New System.Drawing.Size(95, 20)
-        Me.txt_searchlimit.TabIndex = 10
+        Me.txt_searchlimit.TabIndex = 6
         Me.txt_searchlimit.Value = New Decimal(New Integer() {20, 0, 0, 0})
         '
         'chck_tektiwit
@@ -282,7 +280,7 @@ Partial Class Form1
         Me.chck_tektiwit.Location = New System.Drawing.Point(6, 117)
         Me.chck_tektiwit.Name = "chck_tektiwit"
         Me.chck_tektiwit.Size = New System.Drawing.Size(179, 17)
-        Me.chck_tektiwit.TabIndex = 9
+        Me.chck_tektiwit.TabIndex = 4
         Me.chck_tektiwit.Text = "Bir kullanıcıdan sadece bir twit al"
         Me.chck_tektiwit.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.chck_tektiwit.UseVisualStyleBackColor = True
@@ -303,7 +301,7 @@ Partial Class Form1
         Me.txt_lastdate.Location = New System.Drawing.Point(179, 65)
         Me.txt_lastdate.Name = "txt_lastdate"
         Me.txt_lastdate.Size = New System.Drawing.Size(99, 20)
-        Me.txt_lastdate.TabIndex = 7
+        Me.txt_lastdate.TabIndex = 2
         '
         'Label5
         '
@@ -321,14 +319,14 @@ Partial Class Form1
         Me.txt_firstdate.Location = New System.Drawing.Point(179, 39)
         Me.txt_firstdate.Name = "txt_firstdate"
         Me.txt_firstdate.Size = New System.Drawing.Size(99, 20)
-        Me.txt_firstdate.TabIndex = 5
+        Me.txt_firstdate.TabIndex = 1
         '
         'txt_q
         '
         Me.txt_q.Location = New System.Drawing.Point(78, 13)
         Me.txt_q.Name = "txt_q"
         Me.txt_q.Size = New System.Drawing.Size(200, 20)
-        Me.txt_q.TabIndex = 3
+        Me.txt_q.TabIndex = 0
         '
         'Label3
         '
@@ -355,7 +353,7 @@ Partial Class Form1
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(10)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(284, 136)
-        Me.GroupBox1.TabIndex = 2
+        Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Twitter Hesap Bilgileri"
         '
@@ -365,7 +363,7 @@ Partial Class Form1
         Me.lnk_logout.Location = New System.Drawing.Point(231, 73)
         Me.lnk_logout.Name = "lnk_logout"
         Me.lnk_logout.Size = New System.Drawing.Size(22, 13)
-        Me.lnk_logout.TabIndex = 8
+        Me.lnk_logout.TabIndex = 3
         Me.lnk_logout.TabStop = True
         Me.lnk_logout.Text = "Çık"
         '
@@ -401,7 +399,7 @@ Partial Class Form1
         Me.btn_login.Location = New System.Drawing.Point(203, 23)
         Me.btn_login.Name = "btn_login"
         Me.btn_login.Size = New System.Drawing.Size(75, 47)
-        Me.btn_login.TabIndex = 4
+        Me.btn_login.TabIndex = 2
         Me.btn_login.Text = "Giriş"
         Me.btn_login.UseVisualStyleBackColor = True
         '
@@ -411,7 +409,7 @@ Partial Class Form1
         Me.txt_password.Name = "txt_password"
         Me.txt_password.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.txt_password.Size = New System.Drawing.Size(140, 20)
-        Me.txt_password.TabIndex = 3
+        Me.txt_password.TabIndex = 1
         '
         'Label2
         '
@@ -427,7 +425,7 @@ Partial Class Form1
         Me.txt_username.Location = New System.Drawing.Point(57, 23)
         Me.txt_username.Name = "txt_username"
         Me.txt_username.Size = New System.Drawing.Size(140, 20)
-        Me.txt_username.TabIndex = 1
+        Me.txt_username.TabIndex = 0
         '
         'Label1
         '
@@ -440,8 +438,8 @@ Partial Class Form1
         '
         'Panel2
         '
+        Me.Panel2.Controls.Add(Me.WB_C)
         Me.Panel2.Controls.Add(Me.Label9)
-        Me.Panel2.Controls.Add(Me.TableLayoutPanel2)
         Me.Panel2.Controls.Add(Me.WB_1)
         Me.Panel2.Controls.Add(Me.beklemeust)
         Me.Panel2.Controls.Add(Me.DGW_List)
@@ -454,6 +452,16 @@ Partial Class Form1
         Me.Panel2.Size = New System.Drawing.Size(708, 486)
         Me.Panel2.TabIndex = 4
         '
+        'WB_C
+        '
+        Me.WB_C.Location = New System.Drawing.Point(439, 170)
+        Me.WB_C.MinimumSize = New System.Drawing.Size(20, 20)
+        Me.WB_C.Name = "WB_C"
+        Me.WB_C.ScriptErrorsSuppressed = True
+        Me.WB_C.Size = New System.Drawing.Size(225, 153)
+        Me.WB_C.TabIndex = 27
+        Me.WB_C.Visible = False
+        '
         'Label9
         '
         Me.Label9.AutoSize = True
@@ -463,35 +471,13 @@ Partial Class Form1
         Me.Label9.TabIndex = 4
         Me.Label9.Text = "-"
         '
-        'TableLayoutPanel2
-        '
-        Me.TableLayoutPanel2.ColumnCount = 1
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Controls.Add(Me.WB_C, 0, 0)
-        Me.TableLayoutPanel2.Location = New System.Drawing.Point(3, 141)
-        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
-        Me.TableLayoutPanel2.RowCount = 1
-        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(696, 278)
-        Me.TableLayoutPanel2.TabIndex = 26
-        Me.TableLayoutPanel2.Visible = False
-        '
-        'WB_C
-        '
-        Me.WB_C.Location = New System.Drawing.Point(3, 3)
-        Me.WB_C.MinimumSize = New System.Drawing.Size(20, 20)
-        Me.WB_C.Name = "WB_C"
-        Me.WB_C.ScriptErrorsSuppressed = True
-        Me.WB_C.Size = New System.Drawing.Size(646, 179)
-        Me.WB_C.TabIndex = 26
-        '
         'WB_1
         '
-        Me.WB_1.Location = New System.Drawing.Point(391, 129)
+        Me.WB_1.Location = New System.Drawing.Point(333, 93)
         Me.WB_1.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WB_1.Name = "WB_1"
         Me.WB_1.ScriptErrorsSuppressed = True
-        Me.WB_1.Size = New System.Drawing.Size(127, 58)
+        Me.WB_1.Size = New System.Drawing.Size(189, 71)
         Me.WB_1.TabIndex = 23
         Me.WB_1.Visible = False
         '
@@ -504,37 +490,38 @@ Partial Class Form1
         Me.beklemeust.Name = "beklemeust"
         Me.beklemeust.Size = New System.Drawing.Size(47, 20)
         Me.beklemeust.TabIndex = 25
-        Me.beklemeust.Value = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.beklemeust.Value = New Decimal(New Integer() {100, 0, 0, 0})
         '
         'DGW_List
         '
         Me.DGW_List.AllowUserToAddRows = False
         Me.DGW_List.BackgroundColor = System.Drawing.Color.White
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGW_List.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGW_List.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.DGW_List.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGW_List.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.durum, Me.sirano, Me.arama_key, Me.zaman, Me.kullanizi, Me.mesaj, Me.twit_url, Me.cevap, Me.kontrol, Me.retweets, Me.favorites})
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGW_List.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(162, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGW_List.DefaultCellStyle = DataGridViewCellStyle4
         Me.DGW_List.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGW_List.Location = New System.Drawing.Point(0, 54)
+        Me.DGW_List.MultiSelect = False
         Me.DGW_List.Name = "DGW_List"
         Me.DGW_List.RowHeadersWidth = 25
         Me.DGW_List.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.DGW_List.Size = New System.Drawing.Size(708, 432)
-        Me.DGW_List.TabIndex = 22
+        Me.DGW_List.TabIndex = 2
         '
         'durum
         '
@@ -586,7 +573,6 @@ Partial Class Form1
         '
         Me.kontrol.HeaderText = "kontrol"
         Me.kontrol.Name = "kontrol"
-        Me.kontrol.Visible = False
         '
         'retweets
         '
@@ -606,7 +592,7 @@ Partial Class Form1
         Me.Panel3.Location = New System.Drawing.Point(0, 31)
         Me.Panel3.Name = "Panel3"
         Me.Panel3.Size = New System.Drawing.Size(708, 23)
-        Me.Panel3.TabIndex = 24
+        Me.Panel3.TabIndex = 1
         '
         'bekleme
         '
@@ -617,7 +603,7 @@ Partial Class Form1
         Me.bekleme.Name = "bekleme"
         Me.bekleme.Size = New System.Drawing.Size(47, 20)
         Me.bekleme.TabIndex = 0
-        Me.bekleme.Value = New Decimal(New Integer() {5, 0, 0, 0})
+        Me.bekleme.Value = New Decimal(New Integer() {50, 0, 0, 0})
         '
         'ToolStrip1
         '
@@ -628,7 +614,7 @@ Partial Class Form1
         Me.ToolStrip1.Margin = New System.Windows.Forms.Padding(3, 0, 5, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(708, 31)
-        Me.ToolStrip1.TabIndex = 5
+        Me.ToolStrip1.TabIndex = 0
         Me.ToolStrip1.Text = "ToolStrip1"
         '
         'btn_site
@@ -753,6 +739,8 @@ Partial Class Form1
         '
         'DkToolStripMenuItem4
         '
+        Me.DkToolStripMenuItem4.Checked = True
+        Me.DkToolStripMenuItem4.CheckState = System.Windows.Forms.CheckState.Checked
         Me.DkToolStripMenuItem4.Name = "DkToolStripMenuItem4"
         Me.DkToolStripMenuItem4.Size = New System.Drawing.Size(96, 22)
         Me.DkToolStripMenuItem4.Tag = "5"
@@ -816,7 +804,7 @@ Partial Class Form1
         Me.lbl_islem.Size = New System.Drawing.Size(86, 19)
         Me.lbl_islem.Text = "İşlem Durumu"
         '
-        'Timer1
+        'tmr_SendReplies
         '
         '
         'tmr_error_control
@@ -846,7 +834,6 @@ Partial Class Form1
         CType(Me.img_avatar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
-        Me.TableLayoutPanel2.ResumeLayout(False)
         CType(Me.beklemeust, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DGW_List, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.bekleme, System.ComponentModel.ISupportInitialize).EndInit()
@@ -905,10 +892,9 @@ Partial Class Form1
     Friend WithEvents lnk_searhcstop As System.Windows.Forms.LinkLabel
     Friend WithEvents lnk_logout As System.Windows.Forms.LinkLabel
     Friend WithEvents pb As System.Windows.Forms.ToolStripProgressBar
-    Friend WithEvents Timer1 As System.Windows.Forms.Timer
+    Friend WithEvents tmr_SendReplies As System.Windows.Forms.Timer
     Friend WithEvents beklemeust As System.Windows.Forms.NumericUpDown
     Friend WithEvents ToolStripStatusLabel1 As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents WB_C As System.Windows.Forms.WebBrowser
     Friend WithEvents pb_wait As System.Windows.Forms.ToolStripProgressBar
     Friend WithEvents lbl_sayi As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents lbl_islem As System.Windows.Forms.ToolStripStatusLabel
@@ -924,7 +910,8 @@ Partial Class Form1
     Friend WithEvents ToolStripStatusLabel3 As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents btn_openexcel As System.Windows.Forms.ToolStripButton
     Friend WithEvents btn_saveexcel As System.Windows.Forms.ToolStripButton
-    Friend WithEvents TableLayoutPanel2 As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents Label9 As System.Windows.Forms.Label
+    Friend WithEvents WB_C As System.Windows.Forms.WebBrowser
     Friend WithEvents durum As System.Windows.Forms.DataGridViewCheckBoxColumn
     Friend WithEvents sirano As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents arama_key As System.Windows.Forms.DataGridViewTextBoxColumn
@@ -936,6 +923,5 @@ Partial Class Form1
     Friend WithEvents kontrol As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents retweets As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents favorites As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Label9 As System.Windows.Forms.Label
 
 End Class

@@ -71,7 +71,7 @@
     <ManifestCertificateThumbprint>0A131155C6AB4D0BE88B2E8C51ECED63AE9E2474</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>TWITAD_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Key.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
